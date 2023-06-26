@@ -1,0 +1,13 @@
+name: Revpro Tester
+on:
+  push:
+  #should this be pull_request?:
+    branches: [ main ]
+    paths: [ 'revpro/**' ]
+
+jobs:
+  # Running all linting actions serially in a single job to reduce redundant startup costs.
+  first-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run test-action
