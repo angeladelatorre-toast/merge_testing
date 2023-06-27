@@ -8,13 +8,7 @@ on:
 jobs:
   # Running all linting actions serially in a single job to reduce redundant startup costs.
   lint:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: toasttab/checkout@v2
-
     - name: Run lint_tf
-      env:
-        TFMODULES_DEPLOY_KEY: ${{secrets.TOASTTAB_MACHINE_TFMODULES_SSH_KEY}}
       run: |
         # Needed to run diff against origin/master
         git fetch --no-tags --prune origin +refs/heads/*:refs/remotes/origin/*
