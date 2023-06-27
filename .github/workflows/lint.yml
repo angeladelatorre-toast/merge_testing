@@ -1,0 +1,27 @@
+name: Run Linter
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  # Running all linting actions serially in a single job to reduce redundant startup costs.
+  lint:
+    - name: Run lint_tf
+      run: |
+        # Needed to run diff against origin/master
+        git fetch --no-tags --prune origin +refs/heads/*:refs/remotes/origin/*
+
+        # Needed to check out modules
+        echo "Piping key to file"
+        mkdir -p ~/.ssh
+        echo "${TFMODULES_DEPLOY_KEY}" > ~/.ssh/TFMODULES_DEPLOY_KEY
+        echo "Changing perms on file"
+        chmod 544 ~/.ssh
+        chmod 400 ~/.ssh/TFMODULES_DEPLOY_KEY
+        echo "start sshagent"
+        eval $(ssh-agent)
+        ssh-add ~/.ssh/TFMODULES_DEPLOY_KEY
+
+        ./.github/scripts/terraform_lint.sh
